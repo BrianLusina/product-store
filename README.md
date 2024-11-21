@@ -51,4 +51,57 @@ Once the [Diesel CLI](#diesel-cli) has been setup and complete, run the below co
 make diesel-setup
 ```
 
-> This will setup the database using diesel cli
+> This will set up the database using diesel cli
+
+#### Running migrations
+
+In order to run migrations, there is a handy command in the [Makefile](./Makefile) that will make it easy to create migration
+scripts using Diesel:
+
+```shell
+make create-migration migration-name=<NAME_OF_MIGRATION>
+```
+
+> <NAME_OF_MIGRATION> is the directory name or the name of the migration to be created. Note that the `migration-name`
+> is an argument that is required.
+
+This will create a new migration folder in the [migrations](./migrations) folder:
+
+```plain
+migrations
+├── 00000000000000_diesel_initial_setup
+│    ├── down.sql
+│    └── up.sql
+└── 2024-11-21-061319_create_products
+    ├── down.sql
+    └── up.sql
+```
+
+> This is an example when run with `make create-migration migration-name=create_products`
+
+From there, open up the `up.sql` & `down.sql` files and write up the SQL script to create tables, functions, triggers, etc.
+
+Note that the `down.sql` undoes what has been setup in the `up.sql`. 
+
+Next up is to run the migrations. This can be done with the command:
+
+```shell
+make run-migrations
+```
+
+> This will run all the migrations not already run
+
+To undo a migration:
+
+```shell
+make redo-migrations
+```
+
+> This will undo a migration
+
+## Tools used
+
+- [Rust](https://www.rust-lang.org) - Programming Language
+- [Diesel](https://diesel.rs) - Declarative ORM
+- [Actix Web](https://actix.rs/) - Web Framework
+- 

@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    cost DECIMAL NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT true
+)
