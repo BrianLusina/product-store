@@ -4,9 +4,6 @@ extern crate dotenvy;
 extern crate serde;
 extern crate serde_json;
 
-pub mod schema;
-pub mod models;
-
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use dotenvy::dotenv;
