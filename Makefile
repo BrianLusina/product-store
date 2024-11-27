@@ -12,7 +12,9 @@ create-migration: ## Generates a migration script
 
 .PHONY: run-migrations
 run-migrations: ## Runs migrations
+	@echo 'Running migrations...'
 	diesel migration run
+	@echo 'Done running migrations'
 
 .PHONY: redo-migrations
 redo-migrations: ## Redoes migrations

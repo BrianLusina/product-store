@@ -4,7 +4,7 @@ diesel::table! {
     products (id) {
         id -> Int4,
         name -> Varchar,
-        cost -> Numeric,
+        cost -> Float8,
         active -> Bool,
     }
 }

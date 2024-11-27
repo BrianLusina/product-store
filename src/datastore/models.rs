@@ -1,7 +1,5 @@
 use crate::datastore::schema::products as ProductsTable;
-use diesel::prelude::*;
 use diesel::{Insertable, Queryable, Selectable};
-use diesel::data_types::PgMoney;
 
 #[derive(Debug, Selectable, Queryable)]
 #[diesel(table_name = ProductsTable)]
@@ -9,7 +7,7 @@ use diesel::data_types::PgMoney;
 pub struct ProductModel {
     pub id: i32,
     pub name: String,
-    pub cost: PgMoney,
+    pub cost: f64,
     pub active: bool,
 }
 
@@ -17,6 +15,6 @@ pub struct ProductModel {
 #[diesel(table_name = ProductsTable)]
 pub struct NewProductModel<'a> {
     pub name: &'a String,
-    pub cost: &'a PgMoney,
+    pub cost: &'a f64,
     pub active: &'a bool,
 }
