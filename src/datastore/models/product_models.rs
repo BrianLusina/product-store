@@ -1,4 +1,4 @@
-use crate::datastore::schema::products as ProductsTable;
+use crate::datastore::models::schema::products as ProductsTable;
 use diesel::{Insertable, Queryable, Selectable};
 
 #[derive(Debug, Selectable, Queryable)]
