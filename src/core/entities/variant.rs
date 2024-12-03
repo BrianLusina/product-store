@@ -9,11 +9,11 @@ impl Variant {
         Variant { name, id }
     }
 
-    fn id(&self) -> Option<u32> {
+    pub fn id(&self) -> Option<u32> {
         self.id
     }
 
-    fn name(&self) -> &str {
+    pub fn name(&self) -> &str {
         &self.name
     }
 }

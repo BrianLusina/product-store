@@ -11,7 +11,7 @@ impl VariantValue {
         VariantValue { variant, values }
     }
 
-    fn variant(&self) -> &Variant {
+    pub(crate) fn variant(&self) -> &Variant {
         &self.variant
     }
 

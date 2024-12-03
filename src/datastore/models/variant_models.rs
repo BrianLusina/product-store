@@ -1,4 +1,4 @@
-use crate::datastore::schema::{
+use crate::datastore::models::schema::{
     product_variants as ProductVariantsTable, variants as VariantsTable,
 };
 use diesel::{Identifiable, Insertable, Queryable, Selectable};
