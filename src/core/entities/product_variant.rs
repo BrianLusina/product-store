@@ -6,7 +6,11 @@ pub struct ProductVariant {
 
 impl ProductVariant {
     pub fn new(product_id: i32, variant_id: i32, value: Option<String>) -> Self {
-        ProductVariant { product_id, variant_id, value }
+        ProductVariant {
+            product_id,
+            variant_id,
+            value,
+        }
     }
 
     pub fn product_id(&self) -> i32 {

@@ -3,7 +3,7 @@ use crate::core::entities::variant_value::VariantValue;
 
 pub struct CompleteProduct {
     product: Product,
-    variants: Vec<VariantValue>
+    variants: Vec<VariantValue>,
 }
 
 impl CompleteProduct {

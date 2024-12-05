@@ -1,7 +1,8 @@
 use crate::datastore::models::schema::products as ProductsTable;
 use diesel::{Insertable, Queryable, Selectable};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Selectable, Queryable)]
+#[derive(Debug, Selectable, Queryable, Serialize, Deserialize)]
 #[diesel(table_name = ProductsTable)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct ProductModel {

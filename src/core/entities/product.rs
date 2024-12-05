@@ -1,3 +1,6 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Product {
     id: Option<u32>,
     name: String,
@@ -8,7 +11,10 @@ pub struct Product {
 impl Product {
     pub fn new(name: String, cost: f64, active: bool, id: Option<u32>) -> Product {
         Product {
-            name, cost, active, id
+            name,
+            cost,
+            active,
+            id,
         }
     }
 

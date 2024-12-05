@@ -3,7 +3,7 @@ use crate::core::entities::variant::Variant;
 #[derive(Clone)]
 pub struct VariantValue {
     variant: Variant,
-    values: Vec<Option<String>>
+    values: Vec<Option<String>>,
 }
 
 impl VariantValue {
@@ -19,4 +19,3 @@ impl VariantValue {
         &self.values
     }
 }
-
