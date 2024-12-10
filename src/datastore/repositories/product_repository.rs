@@ -14,9 +14,11 @@ use crate::datastore::models::schema::variants::dsl::{name as variant_name, vari
 use crate::datastore::models::variant_models::{ProductVariantModel, VariantModel};
 use anyhow::Result as AnyResult;
 use diesel::row::NamedRow;
+use diesel::result::Error as DieselError;
 use diesel::{
     BelongingToDsl, Connection, GroupedBy, PgConnection, QueryDsl, RunQueryDsl, SelectableHelper,
 };
+use crate::datastore::repositories::mappers::{map_product_and_variant_model_to_variant, map_product_model_to_product};
 
 struct ProductRepository<'a> {
     connection: &'a mut PgConnection,
@@ -29,6 +31,14 @@ impl<'a> ProductRepository<'a> {
 }
 
 impl<'a> ProductRepository<'a> {
+
+    fn insert(&self, product: NewProductModel) -> Result<ProductModel, DieselError> {
+       diesel::insert_into(products)
+            .values(product)
+            .returning(ProductModel::as_returning())
+            .get_result(self.connection)
+    }
+
     fn fetch_products(&self, params: ListQueryParams) -> Vec<ProductModel> {
         products
             .limit(params.limit)
@@ -37,6 +47,22 @@ impl<'a> ProductRepository<'a> {
             .unwrap_or_else(|error| {
                 panic!("Error loading products: {:?}", error);
             })
+    }
+
+    fn fetch_product_by_id(&self, id: i32) -> Result<ProductModel, DieselError> {
+        products
+            .find(id)
+            .first(self.connection)
+    }
+
+    fn fetch_product_with_variants(&self, id: i32) -> AnyResult<(ProductModel, Vec<ProductVariantModel, VariantModel>)> {
+        let existing_product = products.find(id).get_result::<ProductModel>(self.connection)?;
+
+        let variants_result = ProductVariantModel::belonging_to(&existing_product)
+            .inner_join(variants)
+            .load::<(ProductVariant, Variant)>(self.connection)?;
+
+        Ok((existing_product, variants_result))
     }
 }
 
@@ -101,18 +127,39 @@ impl ProductDatastore for ProductRepository<'_> {
         })
     }
 
+    fn get_product(&self, id: u32) -> AnyResult<Product> {
+        let existing_product = self.fetch_product_by_id(id as i32).unwrap_or_else(|error| {
+            panic!("Error loading product: {:?}", error);
+        });
+
+        Ok(map_product_model_to_product(existing_product))
+    }
+
+    fn get_product_with_variants(&self, id: u32) -> AnyResult<(Product, Vec<ProductVariant, Variant>)> {
+        let existing_product_with_variants = self.fetch_product_with_variants(id as i32).unwrap_or_else(|error| {
+            panic!("Error loading product with variants: {:?}", error);
+        });
+
+        let (existing_product, existing_product_variants) = existing_product_with_variants;
+
+        let product = map_product_model_to_product(existing_product);
+
+        let mut variants_result: Vec<(ProductVariant, Variant)> = vec![];
+
+        for (p, v) in existing_product_variants {
+            variants_result.push(map_product_and_variant_model_to_variant((p, v)));
+        }
+
+        Ok(product, variants_result)
+    }
+
     fn list_products(&self, params: ListQueryParams) -> Vec<Product> {
         let records = self.fetch_products(params);
 
         let mut product_records: Vec<Product> = vec![];
 
         for record in records {
-            let product = Product::new(
-                record.name,
-                record.cost,
-                record.active,
-                Some(record.id as u32),
-            );
+            let product = map_product_model_to_product(record);
 
             product_records.push(product);
         }
@@ -127,7 +174,7 @@ impl ProductDatastore for ProductRepository<'_> {
         let product_records = self.fetch_products(params);
         let variants_result = ProductVariantModel::belonging_to(&product_records)
             .inner_join(variants)
-            .load::<(ProductVariant, Variant)>(self.connection)?
+            .load::<(ProductVariantModel, VariantModel)>(self.connection)?
             .grouped_by(&product_records);
 
         let data = product_records

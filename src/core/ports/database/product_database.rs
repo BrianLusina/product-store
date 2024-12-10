@@ -12,6 +12,12 @@ pub trait ProductDatastore {
     // creates a complete product
     fn create_complete_product(&self, complete_product: CompleteProduct) -> AnyResult<i32>;
 
+    // get product by a given ID
+    fn get_product(&self, id: u32) -> AnyResult<Product>;
+
+    // get product with a given ID with its variants
+    fn get_product_with_variants(&self, id: u32) -> AnyResult<(Product, Vec<ProductVariant, Variant>)>;
+
     // lists products
     fn list_products(&self, params: ListQueryParams) -> Vec<Product>;
 
